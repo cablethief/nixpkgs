@@ -23,7 +23,7 @@ let
 
 in {
   # Consider if servers should have *fewer* packages than common.nix
-  environment.systemPackages = with pkgs; [ git vim ]; # Example override
+  environment.systemPackages = with pkgs; [ git vim curl ]; # Example override
 
   # --- Strict Firewall ---
   # Example: Default deny incoming, only allow specific ports explicitly
