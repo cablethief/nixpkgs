@@ -29,30 +29,26 @@
   # --- Basic User Setup ---
   # Define common users here, or manage them per-host.
   # Example: A shared admin user (consider security implications)
-  users.users.admin = {
+  users.users.michael = {
     isNormalUser = true;
     description = "Administrator";
     extraGroups = [ "networkmanager" "wheel" ]; # 'wheel' grants sudo access
     # Set initial password securely (e.g., using mkpasswd or secrets management)
     # initialHashedPassword = "$6$...hashedpassword...";
-    openssh.authorizedKeys.keys = [
-      # Add public SSH keys for this user here if desired globally
-      # "ssh-ed25519 AAAAC3..."
-    ];
   };
   # Allow users in 'wheel' group to use sudo
-  security.sudo.wheelNeedsPassword = true;
+  security.sudo.wheelNeedsPassword = false;
 
   # --- Basic SSH Daemon Settings ---
   # Enable SSH access on all machines (can be overridden per-host)
-  services.openssh = {
-    enable = true;
-    settings = {
-      # PermitRootLogin = "no"; # Good security practice
-      # PasswordAuthentication = false; # Recommended if using keys
-      # KbdInteractiveAuthentication = false; # Often needed for PAM/2FA, disable if not
-    };
-  };
+#   services.openssh = {
+#     enable = true;
+#     settings = {
+#       # PermitRootLogin = "no"; # Good security practice
+#       # PasswordAuthentication = false; # Recommended if using keys
+#       # KbdInteractiveAuthentication = false; # Often needed for PAM/2FA, disable if not
+#     };
+#   };
 
   # --- Nix Settings ---
   # Configure automatic garbage collection
@@ -70,7 +66,7 @@
   # This example allows established connections and related traffic, plus SSH.
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ config.services.openssh.ports.[0] ]; # Allow SSH port
+    # allowedTCPPorts = [ config.services.openssh.ports.[0] ]; # Allow SSH port
     # allowedUDPPorts = [ ... ];
   };
 

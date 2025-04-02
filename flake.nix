@@ -1,99 +1,99 @@
-# /etc/nixos/flake.nix (Multi-Host Example)
+# /etc/nixos/flake.nix (With Automatic Package Discovery)
 {
-  description = "My NixOS Configurations for Multiple Hosts";
+  description = "My NixOS Configuration and Custom Packages";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # Or your preferred branch
-    # Add other inputs if needed (e.g., home-manager, agenix)
-    # agenix = { url = "github:ryantm/agenix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # flake-utils provides helpers like eachDefaultSystem if you prefer that
+    # flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
     let
-      # --- Define common helper functions or values ---
-      # Function to generate pkgs for a specific system, ensuring unfree is enabled
-      pkgsFor = system: import nixpkgs {
-         inherit system;
-         config.allowUnfree = true; # Needed for Factorio package build
-         # Add overlays here if needed globally: overlays = [ ... ];
-      };
+      # Use nixpkgs lib functions for system iteration
+      lib = nixpkgs.lib;
+      # Systems to build packages for (or use flake-utils.lib.eachDefaultSystem)
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ]; # Add systems you need
 
-      # --- Define common custom packages once ---
-      # Function to build factorio for a specific system
-      factorioPackageFor = system: (pkgsFor system).callPackage ./pkgs/factorio {};
-      # Add other custom packages if you have them
+      # --- Function to Discover and Build Packages for a System ---
+      discoverPackages = system:
+        let
+          # Get pkgs for the specific system
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true; # Allow building unfree pkgs like Factorio
+            # overlays = [ ... ]; # Apply overlays if needed globally for builds
+          };
 
-      # --- Common Special Args to pass to all hosts ---
-      commonSpecialArgs = {
-        # Make all inputs available if needed by shared modules
-        inherit inputs;
-        # Pass common custom packages (adjust system architecture if needed)
-        factorioPackage = factorioPackageFor "x86_64-linux";
-      };
+          # Define the path to your packages directory
+          pkgsPath = ./pkgs;
+
+          # Read the directory contents { factorio = "directory"; ... }
+          pkgsDirEntries = builtins.readDir pkgsPath;
+
+          # Filter out non-directories (like README files, etc.)
+          packageDirs = lib.filterAttrs (name: type: type == "directory") pkgsDirEntries;
+
+          # Create an attribute set { packageName = packageDerivation; ... }
+          # by calling callPackage on each directory found
+          packagesSet = lib.mapAttrs (pkgName: type:
+            pkgs.callPackage "${pkgsPath}/${pkgName}" {
+              # You can pass arguments here if needed by specific packages,
+              # but typically {} is sufficient for self-contained packages.
+              # Example: someArg = "value";
+            }
+          ) packageDirs;
+
+        in packagesSet; # Return the set like { factorio = <drv>; my-cool-script = <drv>; }
+
+      # --- Generate package sets for all supported systems ---
+      packagesPerSystem = lib.genAttrs supportedSystems discoverPackages;
 
     in {
-      # --- Define each NixOS Host ---
+      # --- Expose Packages ---
+      # packages = flake-utils.lib.eachDefaultSystem (system: discoverPackages system); # Alternative using flake-utils
+      packages = packagesPerSystem;
+
+      # --- Expose Overlay ---
+      # The overlay provides the discovered packages for the system it's applied to.
+      overlays.default = final: prev: discoverPackages prev.system;
+
+      # --- NixOS Configurations ---
       nixosConfigurations = {
-
-        "proxmox-host" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux"; # Specify architecture
-          specialArgs = commonSpecialArgs; # Pass common args
+        "factorio" = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+            # Pass the set of discovered packages for this host's system
+            customPackages = packagesPerSystem."x86_64-linux";
+          };
           modules = [
-            # Host-specific main configuration file
-            ./hosts/proxmox-host/default.nix
-
-            # Shared modules this host should include
-            # ./modules/common.nix
-            # ./modules/services/base-server.nix
-
-            # Proxmox module - now likely imported within hosts/proxmox-host/default.nix
-            # Or kept here if truly fundamental to this flake output
-
-            # Inline module for Nix settings (can stay if universal)
-            ({ config, pkgs, ... }: {
-              nix.settings = {
-                sandbox = false;
-                experimental-features = [ "nix-command" "flakes" ];
-                auto-optimise-store = true;
-              };
-            })
-            # Add agenix module if using it: inputs.agenix.nixosModules.default
+            ./hosts/factorio/default.nix
+            ./modules/services/base.nix
+            # ... other modules ...
           ];
         };
 
-        # "laptop-bravo" = nixpkgs.lib.nixosSystem {
+        # "laptop-bravo" = lib.nixosSystem {
         #   system = "x86_64-linux";
-        #   specialArgs = commonSpecialArgs; # Pass common args (Factorio might not be needed here!)
-        #   # Alternatively define specific specialArgs: specialArgs = { inherit inputs; };
-        #   modules = [
-        #     # Host-specific main configuration file
-        #     ./hosts/laptop-bravo/default.nix
-
-        #     # Shared modules this host should include
-        #     # ./modules/common.nix
-        #     # ./modules/desktop.nix
-        #   ];
+        #    specialArgs = {
+        #      inherit inputs;
+        #      customPackages = packagesPerSystem."x86_64-linux";
+        #      # You might have different specialArgs per host if needed
+        #    };
+        #    modules = [
+        #      ./hosts/laptop-bravo/default.nix
+        #      # ... other modules ...
+        #    ];
         # };
 
-        # "server-alpha" = nixpkgs.lib.nixosSystem {
-        #   system = "x86_64-linux";
-        #   specialArgs = commonSpecialArgs;
-        #   modules = [
-        #     # Host-specific main configuration file
-        #     ./hosts/server-alpha/default.nix
-        #     # ./modules/common.nix
-        #     # ./modules/services/base-server.nix
-        #     # Add other modules specific to this server role...
-        #   ];
-        # };
-
-        # --- Add more hosts here ---
-
+        # Add other hosts...
       }; # End nixosConfigurations
 
-      # Optional: Expose packages/overlays/apps if needed
-      packages.x86_64-linux.factorio = factorioPackageFor "x86_64-linux";
-      # ... other outputs ...
+      # --- Optional: Default Package ---
+      # Select a default package if desired, e.g., for `nix build .`
+      # Requires choosing one package name consistently.
+      # defaultPackage = lib.genAttrs supportedSystems (system: packagesPerSystem.${system}.factorio);
 
     }; # End outputs
 }
