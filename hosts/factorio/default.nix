@@ -6,7 +6,7 @@
 # 'let' block comes immediately after the signature
 let
   # Import host-specific secrets if using file method
-  factorioSecrets = import ./secrets/factorio-credentials.nix;
+  factorioSecrets = import /etc/nixos/hosts/factorio/secrets/factorio-credentials.nix;
 
 # 'in' is followed by ONE single attribute set containing ALL options
 in {
