@@ -1,65 +1,99 @@
-# /path/to/my-factorio-flake/flake.nix
+# /etc/nixos/flake.nix (Multi-Host Example)
 {
-  description = "A custom flake for the Factorio game";
+  description = "My NixOS Configurations for Multiple Hosts";
 
   inputs = {
-    # Use the nixpkgs revision you want the package to be built against
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # Or stable, or a specific commit
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; # Or your preferred branch
+    # Add other inputs if needed (e.g., home-manager, agenix)
+    # agenix = { url = "github:ryantm/agenix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        # Import nixpkgs for the target system
-        pkgs = import nixpkgs {
-          inherit system;
-          # You could apply overlays here if needed, but usually not necessary for just packaging
-          # overlays = [ ... ];
-          # Allow non-free packages like factorio
-          config.allowUnfree = true;
+  outputs = { self, nixpkgs, ... }@inputs:
+    let
+      # --- Define common helper functions or values ---
+      # Function to generate pkgs for a specific system, ensuring unfree is enabled
+      pkgsFor = system: import nixpkgs {
+         inherit system;
+         config.allowUnfree = true; # Needed for Factorio package build
+         # Add overlays here if needed globally: overlays = [ ... ];
+      };
+
+      # --- Define common custom packages once ---
+      # Function to build factorio for a specific system
+      factorioPackageFor = system: (pkgsFor system).callPackage ./pkgs/factorio {};
+      # Add other custom packages if you have them
+
+      # --- Common Special Args to pass to all hosts ---
+      commonSpecialArgs = {
+        # Make all inputs available if needed by shared modules
+        inherit inputs;
+        # Pass common custom packages (adjust system architecture if needed)
+        factorioPackage = factorioPackageFor "x86_64-linux";
+      };
+
+    in {
+      # --- Define each NixOS Host ---
+      nixosConfigurations = {
+
+        "proxmox-host" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux"; # Specify architecture
+          specialArgs = commonSpecialArgs; # Pass common args
+          modules = [
+            # Host-specific main configuration file
+            ./hosts/proxmox-host/default.nix
+
+            # Shared modules this host should include
+            # ./modules/common.nix
+            # ./modules/services/base-server.nix
+
+            # Proxmox module - now likely imported within hosts/proxmox-host/default.nix
+            # Or kept here if truly fundamental to this flake output
+
+            # Inline module for Nix settings (can stay if universal)
+            ({ config, pkgs, ... }: {
+              nix.settings = {
+                sandbox = false;
+                experimental-features = [ "nix-command" "flakes" ];
+                auto-optimise-store = true;
+              };
+            })
+            # Add agenix module if using it: inputs.agenix.nixosModules.default
+          ];
         };
 
-        # Define how to call your factorio package definition
-        factorioDrv = pkgs.callPackage ./pkgs/factorio {
-          # You can override arguments here if needed.
-          # For example, to enable steam support:
-          # steamSupport = true;
-          # steam = pkgs.steam; # Ensure steam is passed if steamSupport = true
-        };
+        # "laptop-bravo" = nixpkgs.lib.nixosSystem {
+        #   system = "x86_64-linux";
+        #   specialArgs = commonSpecialArgs; # Pass common args (Factorio might not be needed here!)
+        #   # Alternatively define specific specialArgs: specialArgs = { inherit inputs; };
+        #   modules = [
+        #     # Host-specific main configuration file
+        #     ./hosts/laptop-bravo/default.nix
 
-        # Version with Steam support (demonstrates passing args)
-        factorioSteamDrv = pkgs.callPackage ./pkgs/factorio {
-           steamSupport = true;
-           steam = pkgs.steam; # callPackage finds 'steam' within 'pkgs'
-        };
+        #     # Shared modules this host should include
+        #     # ./modules/common.nix
+        #     # ./modules/desktop.nix
+        #   ];
+        # };
 
-      in
-      {
-        # Expose the package(s) under the 'packages' attribute
-        packages = {
-          factorio = factorioDrv;
-          factorio-steam = factorioSteamDrv;
-          # Set a default for convenience (e.g., `nix build .`)
-          default = self.packages.${system}.factorio;
-        };
+        # "server-alpha" = nixpkgs.lib.nixosSystem {
+        #   system = "x86_64-linux";
+        #   specialArgs = commonSpecialArgs;
+        #   modules = [
+        #     # Host-specific main configuration file
+        #     ./hosts/server-alpha/default.nix
+        #     # ./modules/common.nix
+        #     # ./modules/services/base-server.nix
+        #     # Add other modules specific to this server role...
+        #   ];
+        # };
 
-        # Optional: Provide an overlay for easy integration into other flakes
-        overlays.default = final: prev: {
-          factorio = self.packages.${prev.system}.factorio;
-          factorio-steam = self.packages.${prev.system}.factorio-steam;
-        };
+        # --- Add more hosts here ---
 
-        # Optional: Default application for `nix run .`
-        apps.default = {
-          type = "app";
-          program = "${self.packages.${system}.default}/bin/factorio";
-        };
-        apps.factorio = self.apps.default;
-        apps.factorio-steam = {
-          type = "app";
-          program = "${self.packages.${system}.factorio-steam}/bin/factorio";
-        };
-      }
-    );
+      }; # End nixosConfigurations
+
+      # Optional: Expose packages/overlays/apps if needed
+      packages.x86_64-linux.factorio = factorioPackageFor "x86_64-linux";
+      # ... other outputs ...
+
+    }; # End outputs
 }
