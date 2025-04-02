@@ -16,7 +16,7 @@
   libxkbcommon,
   makeDesktopItem,
   makeWrapper,
-  releaseType,
+  releaseType ? "headless",
   stdenv,
   wayland,
 
