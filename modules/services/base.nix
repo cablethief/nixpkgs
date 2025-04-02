@@ -37,8 +37,6 @@ in {
     allowedUDPPorts = [
       # Add UDP ports if needed
     ];
-    # Allow pings (optional)
-    icmp_echo_requests.enable = true;
   };
   
   services.openssh = {
@@ -72,7 +70,7 @@ in {
 
     system.autoUpgrade = {
         enable = true;
-        flake = "/etc/nixos/home";
+        flake = "/etc/nixos";
         flags = [
             "--update-input"
             "nixpkgs"
