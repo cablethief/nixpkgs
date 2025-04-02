@@ -12,7 +12,7 @@ let
 in {
   # --- Imports belong inside the main attribute set ---
   imports = [
-    ./hardware-configuration.nix # Make sure this exists/is correct relative path
+    # ./hardware-configuration.nix # Make sure this exists/is correct relative path
     ../../modules/common.nix     # Make sure relative path is correct
     # Assuming base-server.nix, check name: ../../modules/services/base-server.nix
     # Make sure this path is correct, e.g., base-server.nix or base.nix?
