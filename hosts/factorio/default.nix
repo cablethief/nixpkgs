@@ -6,7 +6,7 @@
 # 'let' block comes immediately after the signature
 let
   # Import host-specific secrets if using file method
-  factorioSecrets = import /root/factorio-credentials.nix;
+  # factorioSecrets = import /root/factorio-credentials.nix;
 
 # 'in' is followed by ONE single attribute set containing ALL options
 in {
@@ -34,9 +34,9 @@ in {
   # Factorio Service using the passed package and local secrets
   services.factorio = {
     package = customPackages.factorio; # Use package from specialArgs
-    username = factorioSecrets.username; # Use variable from 'let' block
-    password = factorioSecrets.password; # Use variable from 'let' block
-    game-password = factorioSecrets.gamePassword; # Use variable from 'let' block
+    username = ""; # Use variable from 'let' block
+    password = ""; # Use variable from 'let' block
+    game-password = ""; # Use variable from 'let' block
     enable = true;
     openFirewall = true;
     public = true;
