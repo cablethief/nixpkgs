@@ -72,7 +72,7 @@ in {
 
     system.autoUpgrade = {
         enable = true;
-        flake = inputs.self.outPath;
+        flake = "/etc/nixos/home";
         flags = [
             "--update-input"
             "nixpkgs"
