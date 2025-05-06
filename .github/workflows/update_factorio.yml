@@ -4,8 +4,8 @@ name: Update Factorio and Auto-Merge PR
 
 on:
   workflow_dispatch: # Allows manual triggering
-  # schedule:
-  #   - cron: '0 0 * * *' # Example: Run daily at midnight UTC
+  schedule:
+    - cron: '0 0 * * *' # Example: Run daily at midnight UTC
 
 jobs:
   update-and-merge:
