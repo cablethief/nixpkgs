@@ -3,6 +3,9 @@
 { config, pkgs, lib, ... }:
 
 {
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # --- Time & Location ---
   time.timeZone = "Europe/London"; # Set your timezone
 
