@@ -69,7 +69,8 @@
           };
           modules = [
             ./hosts/factorio/default.nix
-            ./modules/services/base.nix
+            # ./modules/services/base.nix
+            # ./modules/common.nix
             # ... other modules ...
           ];
         };
