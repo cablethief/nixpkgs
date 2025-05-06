@@ -31,7 +31,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install absl requests
+          pip install absl-py requests
 
       - name: Run Python script to update file
         # IMPORTANT: Replace './your_python_subdirectory' with the actual path to your script's directory
