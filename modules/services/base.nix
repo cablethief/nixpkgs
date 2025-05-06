@@ -70,10 +70,9 @@ in {
 
     system.autoUpgrade = {
         enable = true;
-        flake = "/etc/nixos";
+        flake = "github:cablethief/nixpkgs";
         flags = [
-            "--update-input"
-            "nixpkgs"
+            "--no-write-lock-file"
             "-L" # print build logs
         ];
         dates = "02:00";
