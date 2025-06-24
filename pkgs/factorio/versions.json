@@ -3,14 +3,14 @@
     "alpha": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio_linux_2.0.57.tar.xz"
+          "factorio_linux_2.0.58.tar.xz"
         ],
-        "name": "factorio_alpha_x64-2.0.57.tar.xz",
+        "name": "factorio_alpha_x64-2.0.58.tar.xz",
         "needsAuth": true,
-        "sha256": "25d8581eb79e439a206d867d6e227f4e99761af8c612804942831569884eb6ef",
+        "sha256": "ac920687a373ba349cb6977d5799215c458939ffa2d2080a76f79f299d7373df",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.0.57/alpha/linux64",
-        "version": "2.0.57"
+        "url": "https://factorio.com/get-download/2.0.58/alpha/linux64",
+        "version": "2.0.58"
       },
       "stable": {
         "candidateHashFilenames": [
@@ -51,14 +51,14 @@
     "expansion": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio-space-age_linux_2.0.57.tar.xz"
+          "factorio-space-age_linux_2.0.58.tar.xz"
         ],
-        "name": "factorio_expansion_x64-2.0.57.tar.xz",
+        "name": "factorio_expansion_x64-2.0.58.tar.xz",
         "needsAuth": true,
-        "sha256": "cbb52bf5b271fc7ce65398e410fc1afd889dfecbb04d6935236feec32102c274",
+        "sha256": "988491cd94ff25b0818aae337a68c98fe11852b633a17ce05ab45768b0dc9e96",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.0.57/expansion/linux64",
-        "version": "2.0.57"
+        "url": "https://factorio.com/get-download/2.0.58/expansion/linux64",
+        "version": "2.0.58"
       },
       "stable": {
         "candidateHashFilenames": [
@@ -75,15 +75,15 @@
     "headless": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio-headless_linux_2.0.57.tar.xz",
-          "factorio_headless_x64_2.0.57.tar.xz"
+          "factorio-headless_linux_2.0.58.tar.xz",
+          "factorio_headless_x64_2.0.58.tar.xz"
         ],
-        "name": "factorio_headless_x64-2.0.57.tar.xz",
+        "name": "factorio_headless_x64-2.0.58.tar.xz",
         "needsAuth": false,
-        "sha256": "22b232afb77067c68a3afe087be6a0ee760479262598a12a709e1b03ea9508a6",
+        "sha256": "be82e1aeba4169420e1b00c12a3e00ec2309a41327f9d6c335feec27bbc885e6",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.0.57/headless/linux64",
-        "version": "2.0.57"
+        "url": "https://factorio.com/get-download/2.0.58/headless/linux64",
+        "version": "2.0.58"
       },
       "stable": {
         "candidateHashFilenames": [
