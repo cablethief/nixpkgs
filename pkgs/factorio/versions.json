@@ -3,14 +3,14 @@
     "alpha": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio_linux_2.1.20.tar.xz"
+          "factorio_linux_2.1.21.tar.xz"
         ],
-        "name": "factorio_alpha_x64-2.1.20.tar.xz",
+        "name": "factorio_alpha_x64-2.1.21.tar.xz",
         "needsAuth": true,
-        "sha256": "cb50311886b4e4218d1bdf9afe18b2b0298696f2a2b3711494676ac1fc77242a",
+        "sha256": "795252971d6fd33d2160721c3c2f678640cd08216bb5e11ce5244a32bc0d8be8",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.1.20/alpha/linux64",
-        "version": "2.1.20"
+        "url": "https://factorio.com/get-download/2.1.21/alpha/linux64",
+        "version": "2.1.21"
       },
       "stable": {
         "candidateHashFilenames": [
@@ -51,14 +51,14 @@
     "expansion": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio-space-age_linux_2.1.20.tar.xz"
+          "factorio-space-age_linux_2.1.21.tar.xz"
         ],
-        "name": "factorio_expansion_x64-2.1.20.tar.xz",
+        "name": "factorio_expansion_x64-2.1.21.tar.xz",
         "needsAuth": true,
-        "sha256": "eaf3cd9a3274a6e6ea0d44840f02403440ab039b70dd37d5717e6a988ce0a08d",
+        "sha256": "3289ecfbea0852e1a398a0984fbe3ed6abbd6437af6e83edf0f9fe28735b4571",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.1.20/expansion/linux64",
-        "version": "2.1.20"
+        "url": "https://factorio.com/get-download/2.1.21/expansion/linux64",
+        "version": "2.1.21"
       },
       "stable": {
         "candidateHashFilenames": [
@@ -75,15 +75,15 @@
     "headless": {
       "experimental": {
         "candidateHashFilenames": [
-          "factorio-headless_linux_2.1.20.tar.xz",
-          "factorio_headless_x64_2.1.20.tar.xz"
+          "factorio-headless_linux_2.1.21.tar.xz",
+          "factorio_headless_x64_2.1.21.tar.xz"
         ],
-        "name": "factorio_headless_x64-2.1.20.tar.xz",
+        "name": "factorio_headless_x64-2.1.21.tar.xz",
         "needsAuth": false,
-        "sha256": "421a483dbcf69b76d854b7fdb86a800c94da04e414c20803c9fce82fc191bbb5",
+        "sha256": "ff634a91048841483f5c000c070447999cc860d61b552d3f82b612c8a87372d8",
         "tarDirectory": "x64",
-        "url": "https://factorio.com/get-download/2.1.20/headless/linux64",
-        "version": "2.1.20"
+        "url": "https://factorio.com/get-download/2.1.21/headless/linux64",
+        "version": "2.1.21"
       },
       "stable": {
         "candidateHashFilenames": [
